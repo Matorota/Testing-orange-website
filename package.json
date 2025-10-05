@@ -1,0 +1,21 @@
+{
+  "name": "playwright-orangehrm-tests",
+  "version": "1.0.0",
+  "description": "Playwright tests for OrangeHRM demo site",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "report": "playwright show-report"
+  },
+  "dependencies": {
+    "playwright": "^1.20.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
