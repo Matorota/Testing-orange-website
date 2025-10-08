@@ -117,10 +117,8 @@ test.describe("Employee Name Search Test", () => {
 
     await page.waitForTimeout(8000);
 
-    // First, let's debug what fields are available
     console.log("DEBUG: Checking all form elements on the page...");
 
-    // Check for form labels to understand the structure
     const labels = page.locator("label, .oxd-label");
     const labelCount = await labels.count();
     console.log(`Found ${labelCount} labels`);
@@ -160,18 +158,15 @@ test.describe("Employee Name Search Test", () => {
 
     let nameFieldFound = false;
 
-    // Try to find Employee Name field by looking for specific patterns
     console.log(
       "Attempting to find Employee Name field by label association..."
     );
 
-    // Method 1: Look for "Employee Name" label and find associated input
     try {
       const employeeNameLabel = page.locator('text="Employee Name"').first();
       if (await employeeNameLabel.isVisible({ timeout: 5000 })) {
         console.log("Found 'Employee Name' label");
 
-        // Try to find input in the same container
         const container = employeeNameLabel
           .locator(
             "xpath=ancestor::div[contains(@class, 'oxd-input-group') or contains(@class, 'oxd-grid-item')]"
@@ -188,7 +183,6 @@ test.describe("Employee Name Search Test", () => {
           await associatedInput.fill("John");
           await page.waitForTimeout(2000);
 
-          // Verify the text was entered
           const enteredValue = await associatedInput.inputValue();
           if (enteredValue === "John") {
             console.log("Successfully entered 'John' into Employee Name field");
@@ -204,7 +198,6 @@ test.describe("Employee Name Search Test", () => {
       console.log(`Employee Name label method failed: ${error.message}`);
     }
 
-    // Method 2: Try autocomplete input (common for employee name fields)
     if (!nameFieldFound) {
       console.log("Trying autocomplete input method...");
       try {
@@ -233,7 +226,6 @@ test.describe("Employee Name Search Test", () => {
       }
     }
 
-    // Method 3: Try specific selectors for OrangeHRM
     const nameFieldSelectors = [
       'input[placeholder*="Type for hints..."]',
       'input[placeholder*="Employee Name"]',
@@ -294,7 +286,6 @@ test.describe("Employee Name Search Test", () => {
       }
     }
 
-    // Method 4: Last resort - try all visible inputs but be more selective
     if (!nameFieldFound) {
       console.log(
         "Last resort: examining all visible inputs more carefully..."
@@ -316,7 +307,6 @@ test.describe("Employee Name Search Test", () => {
             const name = await input.getAttribute("name");
             const className = await input.getAttribute("class");
 
-            // Check parent elements for context
             const parentDiv = input.locator("xpath=..");
             const grandParentDiv = input.locator("xpath=../..");
             const parentText = await parentDiv.textContent();
@@ -328,7 +318,6 @@ test.describe("Employee Name Search Test", () => {
             console.log(`  - parent text: "${parentText}"`);
             console.log(`  - grandparent text: "${grandParentText}"`);
 
-            // More intelligent selection criteria
             const isLikelyEmployeeNameField =
               (placeholder &&
                 (placeholder.toLowerCase().includes("type for hints") ||
@@ -343,7 +332,6 @@ test.describe("Employee Name Search Test", () => {
                   grandParentText.includes("Employee"))) ||
               (className && className.includes("autocomplete"));
 
-            // Skip definitely wrong fields
             const isWrongField =
               (placeholder &&
                 (placeholder.toLowerCase().includes("id") ||
@@ -367,7 +355,6 @@ test.describe("Employee Name Search Test", () => {
                 await input.fill("John");
                 await page.waitForTimeout(2000);
 
-                // Verify the text was actually entered
                 const enteredValue = await input.inputValue();
                 if (enteredValue === "John") {
                   console.log(`SUCCESS: Entered 'John' into input ${i}`);
@@ -382,7 +369,6 @@ test.describe("Employee Name Search Test", () => {
                 console.log(`Failed to fill input ${i}: ${fillError.message}`);
               }
             } else if (!isWrongField && i < 3) {
-              // As fallback, try first few inputs if they don't seem wrong
               console.log(`Trying input ${i} as fallback option`);
               try {
                 await input.scrollIntoViewIfNeeded();
@@ -418,7 +404,6 @@ test.describe("Employee Name Search Test", () => {
     console.log("STEP 3: Looking for Search button...");
     await page.waitForTimeout(3000);
 
-    // Debug: Check all buttons on the page
     console.log("DEBUG: Checking all buttons on the page...");
     const allButtons = page.locator("button");
     const buttonCount = await allButtons.count();
@@ -505,7 +490,6 @@ test.describe("Employee Name Search Test", () => {
       }
     }
 
-    // Last resort: try any submit button or button with "Search" in class
     if (!searchButtonFound) {
       console.log(
         "Last resort: trying any submit button or form action button..."
@@ -551,7 +535,6 @@ test.describe("Employee Name Search Test", () => {
     }
 
     if (!searchButtonFound) {
-      // Try pressing Enter as final fallback
       console.log("Final fallback: trying to press Enter key...");
       try {
         await page.keyboard.press("Enter");
